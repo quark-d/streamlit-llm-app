@@ -23,12 +23,6 @@ load_dotenv()
 # 2) 専門家ロール定義
 # =====================
 ROLES = {
-    "マーケティング戦略家": {
-        "system": (
-            "あなたは冷静かつ実務的なマーケティング戦略家です。 "
-            "ユーザーの入力を『課題の特定→仮説→施策候補→KPI/検証方法』の順で、簡潔かつ具体的に提案してください。"
-        )
-    },
     "採用アドバイザー": {
         "system": (
             "あなたは現場に強い採用アドバイザーです。 "
@@ -55,13 +49,12 @@ def ask_llm(user_text: str, role_key: str) -> str:
 
     system_msg = ROLES[role_key]["system"]
 
-    # LangChainのプロンプトテンプレート（Lesson8の基本形に準拠）
+    # LangChainのプロンプトテンプレート（Lesson8)
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_msg),
         ("human", "{input}")
     ])
 
-    # モデルはコース準拠で gpt-4o-mini を採用（温度は控えめ）
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
 
     chain = prompt | llm  # Runnableチェーン
@@ -71,12 +64,11 @@ def ask_llm(user_text: str, role_key: str) -> str:
 # =====================
 # 4) Streamlit UI
 # =====================
-st.set_page_config(page_title="LLMアプリ（Lesson21 提出課題）", page_icon="🤖")
+st.set_page_config(page_title="LLM Webアプリ（Lesson21 提出課題）", page_icon="🤖")
 
-st.title("LLM機能付きミニアプリ 🧪")
+st.title("LLM Web アプリ 🧪")
 st.caption(
-    "Lesson21 Chapter6 提出課題サンプル：入力とロール選択からLLMに質問し、結果を表示します。\n"
-    "※ OpenAI APIキーは .env または Streamlit Secrets に設定してください。"
+    "Lesson21 Chapter6 提出課題サンプル：\n入力とロール選択からLLMに質問し、結果を表示します。"
 )
 
 with st.expander("このアプリの使い方 / 注意事項", expanded=True):
@@ -88,7 +80,6 @@ with st.expander("このアプリの使い方 / 注意事項", expanded=True):
         3. 画面下部にLLMの回答が表示されます。
 
         **注意**
-        - APIキーは外部に公開しないでください（`.env` は GitHub にアップロードしない）。
         - 本サンプルの回答は参考情報です。重要な意思決定は一次情報で必ず検証してください。
         """
     )
@@ -99,7 +90,7 @@ role_choice = st.sidebar.radio("専門家ロール", list(ROLES.keys()), index=0
 
 # 入力フォーム（1つ）
 with st.form("ask_form", clear_on_submit=False):
-    user_text = st.text_area("質問 / 相談内容を入力", height=160, placeholder="例）地方B2B向けにリードを増やしたい。短期で打てる手は？")
+    user_text = st.text_area("質問 / 相談内容を入力", height=160, placeholder="質問内容を入力します")
     submitted = st.form_submit_button("送信")
 
 # 送信処理
